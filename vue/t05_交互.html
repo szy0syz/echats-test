@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>vue交互</title>
+    <script src="lib/vue-2.0.5/dist/vue.js"></script>
+    <script src="lib/vue-resource.js"></script>
+    <script>
+        window.onload = function () {
+            new Vue({
+                el:'#box',
+                data:{
+                    url:"http://news-at.zhihu.com/api/4/news/latest?callback=abc",
+                    wd:"",
+                    listData:[]
+                },
+                methods:{
+                    getTxt:function () {
+                        this.$http.get("s.txt").then(function (res) {
+                            alert(res.status);
+                            console.log(res.data);
+                        }, function (res) {
+                            alert(res.status);
+                        })
+                    },
+                    baidu:function () {
+                        this.$http.get("https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su",{
+                            params: {
+                                wd: this.wd,
+                                callback: 'cb'
+                            }
+                        }).then(function(res){
+                            alert(res.s);
+                        },function(res){
+                            alert(res.status);
+                        });
+                    }
+                }
+            })
+        }
+    </script>
+</head>
+<body>
+    <div id="box">
+        <input type="text" v-model="wd"> <input type="button" value="搜索" @click="baidu()">
+        <ul>
+            <li v-for="(val,index) in listData">{{val}}</li>
+        </ul>
+        <hr>
+        <input type="button" value="获取txt文件" @click="getTxt()">
+    </div>
+</body>
+</html>

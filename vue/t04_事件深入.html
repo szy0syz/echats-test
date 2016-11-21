@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vue事件深入</title>
+    <script src="lib/vue-2.0.5/dist/vue.js"></script>
+    <style>
+        .red{
+            color: red;
+        }
+        .blue{
+            background: blue;
+        }
+    </style>
+    <script>
+        window.onload = function () {
+            new Vue({
+                el:"#box",
+                data:{
+                    url:"https://www.baidu.com/img/bd_logo1.png",
+                    w:"100px",
+                    red:"red",
+                    b:"blue"
+                },
+                methods:{
+                    show:function (ev) {
+                        alert(ev.clientX);
+                    },
+                    show1:function () {
+                        alert(1);
+                    },
+                    show2:function () {
+                        alert(2);
+                    },
+                    keyEvent:function (ev) {
+                        alert(ev.keyCode);
+                    }
+                },
+                filters: {
+                    capitalize: function (value) {
+                        if (!value) return ''
+                        value = value.toString()
+                        return value.charAt(0).toUpperCase() + value.slice(1)
+                    },
+                    lowercase: function (value) {
+                        if(!value) return ''
+                        value = value.toString()
+                        return value.toLocaleLowerCase()
+                    }
+                }
+            })
+        }
+    </script>
+</head>
+<body>
+    <div id="box">
+        <input type="button" value="按钮1" @click="show($event)">
+        <hr>
+        <input type="button" value="按钮2" @click.stop="show1()">
+        <hr>
+        <input type="button" value="按钮3" @contextmenu="show1()">
+        <hr>
+        <input type="text" @keyDown="keyEvent($event)">
+        <hr>
+        <img :src="url" alt="" :width="w">
+        <hr>
+        <strong :class="[red,b]">我是文字君！</strong>
+        <hr>
+        {{"welCCCCCome" | lowercase}}
+    </div>
+</body>
+</html>
