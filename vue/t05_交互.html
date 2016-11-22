@@ -5,14 +5,20 @@
     <title>vue交互</title>
     <script src="lib/vue-2.0.5/dist/vue.js"></script>
     <script src="lib/vue-resource.js"></script>
+    <style>
+        .gray{
+            background: #ccc;
+        }
+    </style>
     <script>
         window.onload = function () {
             new Vue({
                 el:'#box',
                 data:{
-                    url:"http://news-at.zhihu.com/api/4/news/latest?callback=abc",
+                    url:"https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su",
                     wd:"",
-                    listData:[]
+                    listData:[],
+                    now:-1
                 },
                 methods:{
                     getTxt:function () {
@@ -23,17 +29,39 @@
                             alert(res.status);
                         })
                     },
-                    baidu:function () {
-                        this.$http.get("https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su",{
+                    show:function (ev) {
+                        if(ev.keyCode == 38 || ev.keyCode == 40) return;
+
+                        if(ev.keyCode == 13){
+                            window.open('https://www.baidu.com/s?wd=' + this.wd);
+                            this.wd = "";
+                        }
+
+                        this.$http.jsonp(this.url,{
                             params: {
-                                wd: this.wd,
-                                callback: 'cb'
-                            }
+                                wd: this.wd
+                            },
+                            jsonp:'cb',
+                            emulateJSON: true
                         }).then(function(res){
-                            alert(res.s);
+                            console.log(res);
+                            this.listData = res.data.s;
                         },function(res){
                             alert(res.status);
                         });
+                    },
+                    changeDown:function () {
+                        this.now++;
+                        if(this.now == this.listData.length) this.now=-1;
+                        this.wd=this.listData[this.now];
+                    },
+                    changeUp:function () {
+                        this.now--;
+                        if(this.now == -2) this.now=this.listData.length-1;
+                        this.wd=this.listData[this.now];
+                    },
+                    changeEnter:function () {
+
                     }
                 }
             })
@@ -42,10 +70,11 @@
 </head>
 <body>
     <div id="box">
-        <input type="text" v-model="wd"> <input type="button" value="搜索" @click="baidu()">
+        <input type="text" v-model="wd" @keyup="show($event)" @keydown.down="changeDown()" @keydown.up.prevent="changeUp()" @keyup.enter="changeEnter()"> <input type="button" value="搜索" @click="show()">
         <ul>
-            <li v-for="(val,index) in listData">{{val}}</li>
+            <li v-for="(val,index) in listData" :class="{gray:index==now}">{{val}}</li>
         </ul>
+        <span v-show="listData.length == 0">暂无数据</span>
         <hr>
         <input type="button" value="获取txt文件" @click="getTxt()">
     </div>
