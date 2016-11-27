@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>组件</title>
+    <script src="../lib/vue-2.0.5/dist/vue.js"></script>
+    <script src="../lib/vue-resource.js"></script>
+    <style>
+        .gray{
+            background: #ccc;
+        }
+    </style>
+    <script>
+
+        window.onload = function () {
+            var vm = new Vue({
+                el:'#box',
+                data: {
+                    myProp: 'bbb'
+                },
+                components:{
+                    'aaa':{
+                        template:'<h2>我是组件A</h2>'
+                    },
+                    'bbb':{
+                        template:'<h2>我是组件B</h2>'
+                    }
+                }
+            })
+        }
+
+
+    </script>
+</head>
+<body>
+    <div id="box">
+        <input type="button" @click="myProp='aaa'" value="组件A" id="za">
+        <input type="button" @click="myProp='bbb'" value="组件B" id="zb">
+        <component :is="myProp"></component>
+    </div>
+</body>
+</html>
